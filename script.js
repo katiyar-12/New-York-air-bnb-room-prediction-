@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000/predict";
+const API_URL = "https://new-york-air-bnb-room-prediction-1.onrender.com/predict";
 
 const form = document.getElementById("predict-form");
 const submitBtn = document.getElementById("submit-btn");
