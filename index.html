@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NYC Listing Price Tier Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="top">
+    <h1>NYC listing price tier</h1>
+    <p>Describe a listing and the model tells you which price category it falls into, with the confidence behind it.</p>
+  </header>
+
+  <div id="banner" class="banner" role="alert" hidden>
+    <span id="banner-text"></span>
+    <button type="button" id="banner-close" aria-label="Dismiss message">&times;</button>
+  </div>
+
+  <main class="layout">
+    <form id="predict-form" class="panel" novalidate>
+      <fieldset>
+        <legend>Location</legend>
+        <div class="grid">
+          <div class="field full">
+            <label for="neighbourhood_group">Borough</label>
+            <select id="neighbourhood_group" name="neighbourhood_group" required>
+              <option value="" disabled selected>Select a borough</option>
+              <option>Manhattan</option>
+              <option>Brooklyn</option>
+              <option>Queens</option>
+              <option>Bronx</option>
+              <option>Staten Island</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="neighbourhood">Neighbourhood</label>
+            <input type="text" id="neighbourhood" name="neighbourhood" maxlength="100" placeholder="e.g. Kensington" required />
+          </div>
+          <div class="field">
+            <label for="latitude">Latitude</label>
+            <input type="number" id="latitude" name="latitude" step="any" min="-180" max="180" placeholder="40.7128" required />
+          </div>
+          <div class="field">
+            <label for="longitude">Longitude</label>
+            <input type="number" id="longitude" name="longitude" step="any" min="-180" max="180" placeholder="-74.0060" required />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Listing</legend>
+        <div class="grid">
+          <div class="field">
+            <label for="minimum_nights">Minimum nights</label>
+            <input type="number" id="minimum_nights" name="minimum_nights" step="1" min="1" max="365" placeholder="1 to 365" required />
+          </div>
+          <div class="field">
+            <label for="calculated_host_listings_count">Host listings</label>
+            <input type="number" id="calculated_host_listings_count" name="calculated_host_listings_count" step="1" min="1" placeholder="At least 1" required />
+          </div>
+          <div class="field">
+            <label for="number_of_reviews">Total reviews</label>
+            <input type="number" id="number_of_reviews" name="number_of_reviews" step="1" min="0" placeholder="0 or more" required />
+          </div>
+          <div class="field">
+            <label for="reviews_per_month">Reviews per month</label>
+            <input type="number" id="reviews_per_month" name="reviews_per_month" step="any" min="0.01" placeholder="e.g. 1.25" required />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Price and availability</legend>
+        <div class="grid">
+          <div class="field">
+            <label for="price">Nightly price (USD)</label>
+            <div class="prefix"><span>$</span><input type="number" id="price" name="price" step="1" min="1" placeholder="150" required /></div>
+          </div>
+          <div class="field">
+            <label for="availability_365">Days available per year</label>
+            <input type="number" id="availability_365" name="availability_365" step="1" min="0" placeholder="0 to 365" required />
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" id="submit-btn" class="primary">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">Predict category</span>
+        </button>
+        <button type="button" id="sample-btn" class="ghost">Fill sample</button>
+        <button type="reset" id="reset-btn" class="ghost">Clear</button>
+      </div>
+    </form>
+
+    <aside id="result" class="panel result" aria-live="polite">
+      <div id="empty" class="empty">
+        <div class="skyline" aria-hidden="true">
+          <i style="--h:46%"></i><i style="--h:72%"></i><i style="--h:38%"></i><i style="--h:90%"></i><i style="--h:58%"></i><i style="--h:68%"></i><i style="--h:34%"></i>
+        </div>
+        <h2>No prediction yet</h2>
+        <p>Fill in the listing details and select <strong>Predict category</strong>. Results appear here.</p>
+      </div>
+
+      <div id="output" hidden>
+        <p class="kicker">Predicted category</p>
+        <div id="category" class="category"></div>
+        <p id="confidence" class="confidence"></p>
+        <h3>Class probabilities</h3>
+        <ul id="probs" class="probs"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
